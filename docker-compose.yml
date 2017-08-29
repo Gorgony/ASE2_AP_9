@@ -1,0 +1,33 @@
+version: "3"
+services:
+  mysql:
+    image: mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: quintor_pw
+        MYSQL_DATABASE: cddb_quintor
+        MYSQL_USER: cddb_quintor
+        MYSQL_PASSWORD: quintor_pw
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  cddb_backend:
+    build: backend/.
+    image: custom-cddb_backend
+    links:
+     - mysql
+    ports:
+      - "8080:8080"
+    command: catalina.sh run
+  webapp:
+    image: nginx
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    links:
+     - cddb_backend
+    ports:
+      - "80:80"
+
+  
+  
+  
